@@ -7,6 +7,8 @@ use App\Models\Category;
 use App\Models\Media;
 use App\Models\Restaurant;
 use App\Models\Subscription;
+use App\Models\SystemSetting;
+use App\Services\PersistentCustomerDataService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -85,12 +87,13 @@ class OnboardingController extends Controller
             ]);
         }
 
-        // Create pending subscription
+        // Create pending subscription with dynamic annual price
+        $annualPrice = (float) SystemSetting::get('annual_subscription_price', config('saas.annual_price', 300));
         Subscription::create([
             'restaurant_id' => $restaurant->id,
             'status' => Subscription::STATUS_PENDING,
-            'price_paid' => config('saas.annual_price', 300),
-            'notes' => 'في انتظار تفعيل الاشتراك السنوي بقيمة ' . config('saas.annual_price', 300) . ' ج.م من الإدارة',
+            'price_paid' => $annualPrice,
+            'notes' => 'في انتظار تفعيل الاشتراك السنوي بقيمة ' . $annualPrice . ' ج.م من الإدارة',
         ]);
 
         // Create default initial categories
@@ -110,6 +113,9 @@ class OnboardingController extends Controller
             restaurant: $restaurant,
             payload: ['slug' => $restaurant->slug]
         );
+
+        // Keep persistent storage synced with new customer registration
+        PersistentCustomerDataService::sync();
 
         return redirect()->route('dashboard')->with('success', 'مبروك! تم إنشاء مطعمك بنجاح. يمكنك الآن إضافة أصناف المنيو وتفعيل الاشتراك.');
     }

@@ -5,6 +5,7 @@ echo "Starting QR Restaurant Menu SaaS container..."
 
 # Create storage directories if missing
 mkdir -p /var/www/html/storage/app/public
+mkdir -p /var/www/html/storage/app/persistent
 mkdir -p /var/www/html/storage/framework/cache
 mkdir -p /var/www/html/storage/framework/sessions
 mkdir -p /var/www/html/storage/framework/views
@@ -20,6 +21,9 @@ php artisan storage:link || true
 # Run database migrations
 echo "Running database migrations..."
 php artisan migrate --force
+
+# Sync customer data to persistent volume
+php artisan saas:sync-customers || true
 
 # Production cache optimization
 if [ "$APP_ENV" = "production" ]; then

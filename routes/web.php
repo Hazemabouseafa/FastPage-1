@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicMenuController;
 use App\Http\Controllers\QrController;
 use App\Http\Controllers\RestaurantController;
+use App\Models\SystemSetting;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -22,7 +23,7 @@ use Inertia\Inertia;
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'demoSlug' => 'koshary-tahrir',
-        'annualPrice' => config('saas.annual_price', 300),
+        'annualPrice' => (float) SystemSetting::get('annual_subscription_price', config('saas.annual_price', 300)),
     ]);
 })->name('home');
 
@@ -91,6 +92,9 @@ $adminPrefix = config('saas.admin_path', 'fastpage-secure-superadmin-control-cen
 
 Route::middleware(['auth', 'admin'])->prefix($adminPrefix)->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::post('/pricing', [AdminController::class, 'updatePricing'])->name('admin.pricing.update');
+    Route::post('/customers/sync', [AdminController::class, 'syncCustomers'])->name('admin.customers.sync');
+    Route::get('/customers/export', [AdminController::class, 'exportCustomers'])->name('admin.customers.export');
     Route::post('/restaurants/{restaurant}/activate', [AdminController::class, 'activateSubscription'])->name('admin.restaurants.activate');
     Route::post('/restaurants/{restaurant}/renew', [AdminController::class, 'renewSubscription'])->name('admin.restaurants.renew');
     Route::post('/restaurants/{restaurant}/suspend', [AdminController::class, 'suspendSubscription'])->name('admin.restaurants.suspend');

@@ -173,4 +173,74 @@ class SubscriptionLifecycleTest extends TestCase
         // Superadmin visiting /admin redirects to secret long path
         $this->actingAs($this->admin)->get('/admin')->assertRedirect(route('admin.dashboard'));
     }
+
+    public function test_super_admin_can_update_annual_subscription_price(): void
+    {
+        $response = $this->actingAs($this->admin)->post(route('admin.pricing.update'), [
+            'annual_price' => 450,
+        ]);
+
+        $response->assertSessionHasNoErrors();
+        $this->assertSame(450.0, (float) \App\Models\SystemSetting::get('annual_subscription_price'));
+
+        // Verify audit log
+        $this->assertDatabaseHas('audit_logs', [
+            'action' => 'settings.pricing_updated',
+        ]);
+
+        // Next activation should use the new price
+        $newOwner = User::factory()->create(['role' => User::ROLE_OWNER]);
+        $newRestaurant = Restaurant::create([
+            'user_id' => $newOwner->id,
+            'name' => 'مطعم الزهور',
+            'slug' => 'al-zohour',
+            'whatsapp_number' => '01099999999',
+            'is_published' => true,
+        ]);
+
+        $this->actingAs($this->admin)->post(route('admin.restaurants.activate', $newRestaurant->id));
+        $this->assertSame(450.0, (float) $newRestaurant->latestSubscription->price_paid);
+    }
+
+    public function test_owner_cannot_update_pricing(): void
+    {
+        $response = $this->actingAs($this->owner)->post(route('admin.pricing.update'), [
+            'annual_price' => 50,
+        ]);
+
+        $response->assertForbidden();
+    }
+
+    public function test_super_admin_can_sync_and_export_customer_data_in_persistent_storage(): void
+    {
+        // 1. Sync
+        $syncResponse = $this->actingAs($this->admin)->post(route('admin.customers.sync'));
+        $syncResponse->assertSessionHasNoErrors();
+
+        $jsonPath = \App\Services\PersistentCustomerDataService::getJsonFilePath();
+        $csvPath = \App\Services\PersistentCustomerDataService::getCsvFilePath();
+
+        $this->assertFileExists($jsonPath);
+        $this->assertFileExists($csvPath);
+
+        $jsonContent = file_get_contents($jsonPath);
+        $this->assertStringContainsString('مطعم الأهرام', $jsonContent);
+        $this->assertStringContainsString('FastPage SaaS', $jsonContent);
+
+        // 2. Export JSON
+        $exportJsonResponse = $this->actingAs($this->admin)->get(route('admin.customers.export', ['format' => 'json']));
+        $exportJsonResponse->assertOk();
+        $exportJsonResponse->assertHeader('content-type', 'application/json; charset=UTF-8');
+
+        // 3. Export CSV
+        $exportCsvResponse = $this->actingAs($this->admin)->get(route('admin.customers.export', ['format' => 'csv']));
+        $exportCsvResponse->assertOk();
+        $exportCsvResponse->assertHeader('content-type', 'text/csv; charset=UTF-8');
+    }
+
+    public function test_artisan_sync_customer_data_command(): void
+    {
+        $this->artisan('saas:sync-customers')
+            ->assertExitCode(0);
+    }
 }

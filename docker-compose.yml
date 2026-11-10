@@ -24,6 +24,7 @@ services:
       QUEUE_CONNECTION: sync
     volumes:
       - uploads_data:/var/www/html/storage/app/public
+      - persistent_data:/var/www/html/storage/app/persistent
     depends_on:
       postgres:
         condition: service_healthy
@@ -50,6 +51,7 @@ services:
 volumes:
   postgres_data:
   uploads_data:
+  persistent_data:
 
 networks:
   qrmenu-network:

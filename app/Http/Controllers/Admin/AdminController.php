@@ -6,11 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\AuditLog;
 use App\Models\Restaurant;
 use App\Models\Subscription;
+use App\Models\SystemSetting;
+use App\Services\PersistentCustomerDataService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class AdminController extends Controller
 {
@@ -57,7 +60,8 @@ class AdminController extends Controller
             })->values();
         }
 
-        $annualPrice = (float) config('saas.annual_price', 300);
+        // Dynamic annual price from SystemSetting (admin controlled)
+        $annualPrice = (float) SystemSetting::get('annual_subscription_price', config('saas.annual_price', 300));
 
         // Global Platform Stats
         $totalRestaurants = Restaurant::count();
@@ -96,6 +100,9 @@ class AdminController extends Controller
             ->limit(15)
             ->get();
 
+        // Persistent storage metadata
+        $persistentInfo = PersistentCustomerDataService::getInfo();
+
         return Inertia::render('Admin/Index', [
             'restaurants' => $restaurants,
             'stats' => $stats,
@@ -105,13 +112,77 @@ class AdminController extends Controller
             ],
             'recentLogs' => $recentLogs,
             'adminPrefix' => config('saas.admin_path', 'fastpage-secure-superadmin-control-center'),
+            'persistentStorage' => $persistentInfo,
+        ]);
+    }
+
+    /**
+     * Update the annual subscription price dynamically across the platform.
+     */
+    public function updatePricing(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'annual_price' => ['required', 'numeric', 'min:1', 'max:100000'],
+        ]);
+
+        $newPrice = (float) $validated['annual_price'];
+        SystemSetting::set('annual_subscription_price', $newPrice, 'number', 'سعر الاشتراك السنوي لمطاعم FastPage');
+
+        AuditLog::log(
+            action: 'settings.pricing_updated',
+            description: "تم تحديث سعر الاشتراك السنوي إلى {$newPrice} ج.م بواسطة مدير النظام",
+            payload: ['new_price' => $newPrice]
+        );
+
+        // Keep persistent storage synced with updated pricing meta
+        PersistentCustomerDataService::sync();
+
+        return back()->with('success', "تم تحديث سعر الاشتراك السنوي بنجاح إلى {$newPrice} ج.م.");
+    }
+
+    /**
+     * Force synchronization of all customer data to Persistent Storage.
+     */
+    public function syncCustomers(): RedirectResponse
+    {
+        $result = PersistentCustomerDataService::sync();
+
+        AuditLog::log(
+            action: 'customers.data_synced',
+            description: "تمت مزامنة بيانات {$result['total_customers']} عميل في التخزين الدائم (Persistent Storage)",
+            payload: $result
+        );
+
+        return back()->with('success', "تمت مزامنة وحفظ بيانات {$result['total_customers']} عميل بنجاح في التخزين الدائم (JSON & CSV).");
+    }
+
+    /**
+     * Export customer records as JSON or CSV.
+     */
+    public function exportCustomers(Request $request): BinaryFileResponse
+    {
+        $format = strtolower((string) $request->query('format', 'json'));
+        PersistentCustomerDataService::sync();
+
+        $timestamp = date('Y-m-d_H-i');
+
+        if ($format === 'csv') {
+            $path = PersistentCustomerDataService::getCsvFilePath();
+            return response()->download($path, "fastpage-customers-{$timestamp}.csv", [
+                'Content-Type' => 'text/csv; charset=UTF-8',
+            ]);
+        }
+
+        $path = PersistentCustomerDataService::getJsonFilePath();
+        return response()->download($path, "fastpage-customers-{$timestamp}.json", [
+            'Content-Type' => 'application/json; charset=UTF-8',
         ]);
     }
 
     public function activateSubscription(Request $request, Restaurant $restaurant): RedirectResponse
     {
         $days = (int) config('saas.subscription_days', 365);
-        $annualPrice = (float) config('saas.annual_price', 300);
+        $annualPrice = (float) SystemSetting::get('annual_subscription_price', config('saas.annual_price', 300));
 
         $subscription = Subscription::create([
             'restaurant_id' => $restaurant->id,
@@ -130,13 +201,16 @@ class AdminController extends Controller
             payload: ['subscription_id' => $subscription->id, 'ends_at' => $subscription->ends_at->toIso8601String()]
         );
 
-        return back()->with('success', "تم تفعيل اشتراك مطعم '{$restaurant->name}' بنجاح لمدة 365 يوماً.");
+        // Keep persistent storage up to date
+        PersistentCustomerDataService::sync();
+
+        return back()->with('success', "تم تفعيل اشتراك مطعم '{$restaurant->name}' بنجاح لمدة 365 يوماً بقيمة {$annualPrice} ج.م.");
     }
 
     public function renewSubscription(Request $request, Restaurant $restaurant): RedirectResponse
     {
         $days = (int) config('saas.subscription_days', 365);
-        $annualPrice = (float) config('saas.annual_price', 300);
+        $annualPrice = (float) SystemSetting::get('annual_subscription_price', config('saas.annual_price', 300));
 
         $latestSub = $restaurant->latestSubscription;
         $baseDate = ($latestSub && $latestSub->ends_at && $latestSub->ends_at->isFuture())
@@ -157,12 +231,15 @@ class AdminController extends Controller
 
         AuditLog::log(
             action: 'subscription.renewed',
-            description: "تجديد اشتراك مطعم '{$restaurant->name}' لسنة إضافية حتى " . $newEndsAt->format('Y-m-d'),
+            description: "تجديد اشتراك مطعم '{$restaurant->name}' لسنة إضافية حتى " . $newEndsAt->format('Y-m-d') . " بقيمة {$annualPrice} ج.م",
             restaurant: $restaurant,
             payload: ['subscription_id' => $subscription->id, 'new_ends_at' => $newEndsAt->toIso8601String()]
         );
 
-        return back()->with('success', "تم تجديد اشتراك '{$restaurant->name}' بنجاح حتى " . $newEndsAt->format('Y-m-d') . ".");
+        // Keep persistent storage up to date
+        PersistentCustomerDataService::sync();
+
+        return back()->with('success', "تم تجديد اشتراك '{$restaurant->name}' بنجاح حتى " . $newEndsAt->format('Y-m-d') . " بقيمة {$annualPrice} ج.م.");
     }
 
     public function suspendSubscription(Request $request, Restaurant $restaurant): RedirectResponse
@@ -187,6 +264,8 @@ class AdminController extends Controller
             restaurant: $restaurant
         );
 
+        PersistentCustomerDataService::sync();
+
         return back()->with('success', "تم تعليق حساب مطعم '{$restaurant->name}'. لن يتمكن الزبائن من تصفح المنيو.");
     }
 
@@ -210,6 +289,8 @@ class AdminController extends Controller
             restaurant: $restaurant
         );
 
+        PersistentCustomerDataService::sync();
+
         return back()->with('success', "تم إلغاء تعليق مطعم '{$restaurant->name}'.");
     }
 
@@ -222,6 +303,8 @@ class AdminController extends Controller
             action: 'restaurant.deleted',
             description: "حذف المطعم '{$name}' نهائياً من قبل مدير النظام"
         );
+
+        PersistentCustomerDataService::sync();
 
         return back()->with('success', "تم حذف المطعم '{$name}' بنجاح.");
     }

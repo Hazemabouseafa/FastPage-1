@@ -18,6 +18,12 @@ import {
     TrendingUp,
     History,
     Phone,
+    HardDrive,
+    Download,
+    FileSpreadsheet,
+    FileJson,
+    Coins,
+    Save,
 } from 'lucide-react';
 
 interface Restaurant {
@@ -65,6 +71,18 @@ interface AuditLog {
     };
 }
 
+interface PersistentStorageInfo {
+    exists: boolean;
+    directory: string;
+    json_file: string;
+    csv_file: string;
+    json_size: number;
+    csv_size: number;
+    synced_at: string;
+    synced_at_human?: string;
+    total_customers: number;
+}
+
 interface Props {
     restaurants: Restaurant[];
     stats: {
@@ -83,12 +101,16 @@ interface Props {
     };
     recentLogs: AuditLog[];
     adminPrefix?: string;
+    persistentStorage?: PersistentStorageInfo;
 }
 
-export default function AdminIndex({ restaurants, stats, filters, recentLogs, adminPrefix }: Props) {
+export default function AdminIndex({ restaurants, stats, filters, recentLogs, adminPrefix, persistentStorage }: Props) {
     const { flash } = usePage().props as any;
     const [search, setSearch] = useState(filters.search || '');
     const [statusFilter, setStatusFilter] = useState(filters.status || '');
+    const [annualPriceInput, setAnnualPriceInput] = useState(stats.annual_plan_price.toString());
+    const [isUpdatingPrice, setIsUpdatingPrice] = useState(false);
+    const [isSyncingStorage, setIsSyncingStorage] = useState(false);
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
@@ -138,6 +160,33 @@ export default function AdminIndex({ restaurants, stats, filters, recentLogs, ad
         if (confirm(`تحذير: هل أنت متأكد من حذف مطعم "${r.name}" نهائياً مع كافة الأقسام والأصناف؟`)) {
             router.delete(route('admin.restaurants.destroy', r.id));
         }
+    };
+
+    const handleUpdatePrice = (e: React.FormEvent) => {
+        e.preventDefault();
+        const price = parseFloat(annualPriceInput);
+        if (isNaN(price) || price <= 0) {
+            alert('يرجى إدخال سعر سنوي صحيح أكبر من صفر');
+            return;
+        }
+
+        if (confirm(`هل أنت متأكد من تغيير سعر الاشتراك السنوي إلى ${price} ج.م؟ سيتم تطبيق السعر الجديد على الصفحة الرئيسية والتفعيلات والتجديدات القادمة.`)) {
+            setIsUpdatingPrice(true);
+            router.post(route('admin.pricing.update'), {
+                annual_price: price,
+            }, {
+                preserveScroll: true,
+                onFinish: () => setIsUpdatingPrice(false),
+            });
+        }
+    };
+
+    const handleSyncStorage = () => {
+        setIsSyncingStorage(true);
+        router.post(route('admin.customers.sync'), {}, {
+            preserveScroll: true,
+            onFinish: () => setIsSyncingStorage(false),
+        });
     };
 
     return (
@@ -232,6 +281,127 @@ export default function AdminIndex({ restaurants, stats, filters, recentLogs, ad
                             <span className="text-xs font-bold text-gray-500 font-sans">ج.م</span>
                         </div>
                         <span className="text-[10px] text-gray-400">بناءً على {stats.annual_plan_price} ج.م / مطعم</span>
+                    </div>
+                </div>
+
+                {/* Admin Controls: Annual Pricing & Persistent Storage */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    {/* Annual Pricing Control Card */}
+                    <div className="bg-white p-5 rounded-3xl border border-gray-200/80 shadow-xs flex flex-col justify-between">
+                        <div>
+                            <div className="flex items-center justify-between mb-2">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-8 h-8 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center font-bold">
+                                        <Coins className="w-4 h-4" />
+                                    </div>
+                                    <h3 className="text-sm font-bold text-gray-900">سعر الاشتراك السنوي</h3>
+                                </div>
+                                <span className="text-[11px] font-bold text-orange-700 bg-orange-50 px-2.5 py-0.5 rounded-full border border-orange-200">
+                                    تحكم فوري
+                                </span>
+                            </div>
+                            <p className="text-xs text-gray-500 leading-relaxed mb-4">
+                                يمكنك كمدير تغيير سعر الاشتراك السنوي. السعر الجديد يُطبق تلقائياً على واجهة الموقع، وحسابات الدخل، وأي تفعيل أو تجديد قادم.
+                            </p>
+                        </div>
+
+                        <form onSubmit={handleUpdatePrice} className="pt-2 border-t border-gray-100 flex items-center gap-2">
+                            <div className="relative flex-1">
+                                <input
+                                    type="number"
+                                    min="1"
+                                    max="100000"
+                                    step="1"
+                                    value={annualPriceInput}
+                                    onChange={(e) => setAnnualPriceInput(e.target.value)}
+                                    className="w-full text-sm font-bold pl-16 pr-3 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-1 focus:ring-orange-200"
+                                    placeholder="300"
+                                    required
+                                />
+                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-500">
+                                    ج.م/سنة
+                                </span>
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={isUpdatingPrice || annualPriceInput === stats.annual_plan_price.toString()}
+                                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs shadow-xs transition disabled:opacity-50 disabled:cursor-not-allowed min-h-[42px]"
+                            >
+                                <Save className="w-4 h-4" />
+                                <span>{isUpdatingPrice ? 'جارِ الحفظ...' : 'حفظ السعر'}</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    {/* Persistent Storage & Customer Data Card */}
+                    <div className="bg-white p-5 rounded-3xl border border-gray-200/80 shadow-xs flex flex-col justify-between">
+                        <div>
+                            <div className="flex items-center justify-between mb-2">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
+                                        <HardDrive className="w-4 h-4" />
+                                    </div>
+                                    <h3 className="text-sm font-bold text-gray-900">التخزين الدائم لبيانات العملاء (Persistent Storage)</h3>
+                                </div>
+                                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                    <span>جاهز للـ Docker / Coolify</span>
+                                </span>
+                            </div>
+
+                            <p className="text-xs text-gray-500 leading-relaxed mb-3">
+                                يتم حفظ وتحديث كافة بيانات العملاء (المطاعم، الهواتف، الاشتراكات) دورياً داخل مسار التخزين الدائم:
+                                <code className="block mt-1 font-mono text-[11px] bg-gray-50 text-slate-800 p-1.5 rounded border border-gray-200 dir-ltr text-left">
+                                    /var/www/html/storage/app/persistent
+                                </code>
+                            </p>
+
+                            <div className="grid grid-cols-2 gap-2 mb-3 text-[11px] bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                                <div>
+                                    <span className="text-gray-400 block">إجمالي العملاء:</span>
+                                    <span className="font-bold text-gray-800 font-mono">
+                                        {persistentStorage?.total_customers ?? restaurants.length} عميل
+                                    </span>
+                                </div>
+                                <div>
+                                    <span className="text-gray-400 block">آخر مزامنة للتخزين:</span>
+                                    <span className="font-bold text-gray-800">
+                                        {persistentStorage?.synced_at_human ?? 'مُحدث الآن'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="pt-2 border-t border-gray-100 flex flex-wrap items-center gap-2">
+                            <button
+                                type="button"
+                                onClick={handleSyncStorage}
+                                disabled={isSyncingStorage}
+                                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition disabled:opacity-50 min-h-[38px]"
+                            >
+                                <RefreshCw className={`w-3.5 h-3.5 ${isSyncingStorage ? 'animate-spin' : ''}`} />
+                                <span>{isSyncingStorage ? 'جارِ المزامنة...' : 'مزامنة التخزين الآن'}</span>
+                            </button>
+
+                            <a
+                                href={route('admin.customers.export', { format: 'json' })}
+                                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs transition min-h-[38px]"
+                                title="تحميل ملف JSON للعملاء"
+                            >
+                                <FileJson className="w-3.5 h-3.5 text-amber-600" />
+                                <span>تحميل JSON</span>
+                            </a>
+
+                            <a
+                                href={route('admin.customers.export', { format: 'csv' })}
+                                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold text-xs border border-emerald-200 transition min-h-[38px]"
+                                title="تحميل ملف Excel / CSV للعملاء"
+                            >
+                                <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
+                                <span>تحميل Excel (CSV)</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
 
