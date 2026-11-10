@@ -18,6 +18,12 @@ chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 # Ensure public storage symlink exists
 php artisan storage:link || true
 
+# Generate APP_KEY if not set
+if [ -z "$APP_KEY" ]; then
+    echo "APP_KEY is not set. Generating application key..."
+    php artisan key:generate --force || true
+fi
+
 # Run database migrations
 echo "Running database migrations..."
 php artisan migrate --force
