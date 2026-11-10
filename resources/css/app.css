@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html {
+        -webkit-tap-highlight-color: transparent;
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+        text-rendering: optimizeLegibility;
+    }
+
+    /* Large touch targets on mobile (min 44px) */
+    button, a, input, select, textarea {
+        touch-action: manipulation;
+    }
+}
+
+/* Hide scrollbars for clean horizontal categories */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* iOS Safe Area Padding */
+.pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 1rem);
+}
+.mb-safe {
+    margin-bottom: env(safe-area-inset-bottom, 1rem);
+}

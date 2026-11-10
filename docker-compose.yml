@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8080}:80"
+    environment:
+      APP_NAME: "منيو كيو آر مصر"
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_URL: "${APP_URL:-http://localhost:8080}"
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: "${DB_DATABASE:-qrmenu}"
+      DB_USERNAME: "${DB_USERNAME:-postgres}"
+      DB_PASSWORD: "${DB_PASSWORD:-secretpassword123}"
+      SAAS_ANNUAL_PRICE: "300"
+      SESSION_DRIVER: database
+      QUEUE_CONNECTION: sync
+    volumes:
+      - uploads_data:/var/www/html/storage/app/public
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - qrmenu-network
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: "${DB_DATABASE:-qrmenu}"
+      POSTGRES_USER: "${DB_USERNAME:-postgres}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD:-secretpassword123}"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d ${DB_DATABASE:-qrmenu}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - qrmenu-network
+
+volumes:
+  postgres_data:
+  uploads_data:
+
+networks:
+  qrmenu-network:
+    driver: bridge
