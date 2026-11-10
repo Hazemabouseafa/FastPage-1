@@ -37,22 +37,22 @@ export default function Login({
 
     const fillAdminDemo = () => {
         setData({
-            email: 'admin@qrmenu.eg',
-            password: 'Password123!',
+            email: 'admin@hazem',
+            password: 'bhgihbhggi33M@',
             remember: true,
         });
     };
 
     return (
         <GuestLayout>
-            <Head title="تسجيل الدخول - منيو كيو آر" />
+            <Head title="تسجيل الدخول - FastPage" />
 
             <div className="mb-6 text-center">
-                <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-orange-600 text-white shadow-lg shadow-orange-600/30 mb-3">
-                    <Utensils className="w-7 h-7" />
-                </div>
+                <Link href="/" className="inline-block">
+                    <img src="/images/fastpage-logo.png" alt="FastPage" className="h-16 w-auto mx-auto object-contain mb-2" />
+                </Link>
                 <h1 className="text-xl font-bold text-gray-900">تسجيل الدخول</h1>
-                <p className="text-xs text-gray-500 mt-1">أهلاً بك مجدداً في لوحة إدارة قائمة طعامك</p>
+                <p className="text-xs text-gray-500 mt-1">حلول رقمية سريعة لمطعمك وكافيهك</p>
             </div>
 
             {status && (
@@ -63,17 +63,18 @@ export default function Login({
 
             <form onSubmit={submit} className="space-y-4">
                 <div>
-                    <InputLabel htmlFor="email" value="البريد الإلكتروني" />
+                    <InputLabel htmlFor="email" value="البريد الإلكتروني أو اسم المستخدم" />
                     <TextInput
                         id="email"
-                        type="email"
+                        type="text"
+                        inputMode="email"
                         name="email"
                         dir="ltr"
                         value={data.email}
                         className="mt-1 block w-full text-left min-h-[48px]"
                         autoComplete="username"
                         isFocused={true}
-                        placeholder="name@restaurant.com"
+                        placeholder="admin@hazem أو name@restaurant.com"
                         onChange={(e) => setData('email', e.target.value)}
                         required
                     />
@@ -152,8 +153,8 @@ export default function Login({
                     >
                         <ShieldCheck className="w-4 h-4 text-gray-700 shrink-0" />
                         <div>
-                            <div className="text-xs font-bold text-gray-900 leading-tight">مدير النظام</div>
-                            <div className="text-[10px] text-gray-500 font-mono">admin@qrmenu...</div>
+                            <div className="text-xs font-bold text-gray-900 leading-tight">مدير النظام (حازم)</div>
+                            <div className="text-[10px] text-gray-500 font-mono">admin@hazem</div>
                         </div>
                     </button>
                 </div>

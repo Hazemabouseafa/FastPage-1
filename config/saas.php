@@ -28,4 +28,7 @@ return [
     // Support WhatsApp number for owners to contact Super Admin for activation/renewal
     'admin_support_whatsapp' => env('ADMIN_SUPPORT_WHATSAPP', '201000000000'),
     'admin_support_phone' => env('ADMIN_SUPPORT_PHONE', '01000000000'),
+
+    // Dedicated Super Admin URL path (security by obscurity & long isolated folder)
+    'admin_path' => env('ADMIN_ROUTE_PATH', 'fastpage-secure-superadmin-control-center'),
 ];

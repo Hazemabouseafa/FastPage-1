@@ -10,20 +10,14 @@ interface Props {
 export default function Welcome({ demoSlug, annualPrice }: Props) {
     return (
         <div className="min-h-screen bg-gradient-to-b from-orange-50/60 via-white to-gray-50 text-gray-900 flex flex-col justify-between">
-            <Head title="منيو كيو آر مصر - أسرع قائمة طعام رقمية لمطعمك" />
+            <Head title="FastPage - أسرع قائمة طعام رقمية لمطعمك وكافيهك" />
 
             {/* Navigation Header */}
-            <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-orange-100/60 px-4 py-3.5">
+            <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-orange-100/60 px-4 py-3">
                 <div className="max-w-4xl mx-auto flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                        <div className="w-10 h-10 rounded-xl bg-orange-600 text-white flex items-center justify-center shadow-md shadow-orange-600/20">
-                            <Utensils className="w-5 h-5" />
-                        </div>
-                        <div>
-                            <span className="text-base font-extrabold text-gray-900 tracking-tight">منيو كيو آر</span>
-                            <span className="text-[10px] block font-bold text-orange-600 leading-none">مصر 🇪🇬</span>
-                        </div>
-                    </div>
+                    <Link href="/" className="flex items-center gap-3">
+                        <img src="/images/fastpage-logo.png" alt="FastPage" className="h-11 sm:h-12 w-auto object-contain" />
+                    </Link>
 
                     <div className="flex items-center gap-2">
                         <Link
@@ -46,7 +40,7 @@ export default function Welcome({ demoSlug, annualPrice }: Props) {
             <main className="max-w-4xl mx-auto px-4 pt-8 pb-16 flex-1 flex flex-col items-center text-center">
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-100/80 text-orange-800 text-xs font-bold mb-6">
                     <Sparkles className="w-3.5 h-3.5 text-orange-600" />
-                    <span>مخصص للمطاعم والكافيهات في مصر</span>
+                    <span>FastPage &bull; حلول رقمية سريعة لمطعمك وكافيهك 🇪🇬</span>
                 </div>
 
                 <h1 className="text-3xl sm:text-5xl font-black text-gray-900 leading-[1.25] tracking-tight max-w-2xl">
@@ -156,8 +150,9 @@ export default function Welcome({ demoSlug, annualPrice }: Props) {
             {/* Footer */}
             <footer className="border-t border-gray-100 bg-white py-6 px-4 text-center text-xs text-gray-400">
                 <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-                    <div>
-                        منيو كيو آر مصر &copy; {new Date().getFullYear()} &bull; حل تقني مصري لإدارة قوائم الطعام الرقمية
+                    <div className="flex items-center gap-2">
+                        <img src="/images/fastpage-logo.png" alt="FastPage" className="h-6 w-auto object-contain" />
+                        <span>FastPage &copy; {new Date().getFullYear()} &bull; حلول رقمية سريعة لمطعمك وكافيهك</span>
                     </div>
                     <div className="flex items-center gap-4 text-gray-500 font-semibold">
                         <Link href={route('login')} className="hover:text-orange-600">دخول الإدارة</Link>

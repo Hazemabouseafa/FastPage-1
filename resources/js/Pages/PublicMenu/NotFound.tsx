@@ -27,7 +27,7 @@ export default function NotFound({ slug }: Props) {
                         className="inline-flex items-center justify-center gap-2 w-full bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs py-3 px-4 rounded-xl shadow-xs transition min-h-[44px]"
                     >
                         <Home className="w-4 h-4" />
-                        <span>الصفحة الرئيسية لمنيو كيو آر</span>
+                        <span>الصفحة الرئيسية لـ FastPage</span>
                     </Link>
                 </div>
             </div>

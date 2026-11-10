@@ -302,11 +302,12 @@ export default function Show({ restaurant, categories }: Props) {
 
             {/* Footer */}
             <footer className="mt-16 text-center text-xs text-gray-400 py-6 border-t border-gray-100">
-                <div className="max-w-xl mx-auto px-4">
+                <div className="max-w-xl mx-auto px-4 flex flex-col items-center gap-1.5">
                     <p className="font-semibold text-gray-500">{restaurant.name}</p>
-                    <p className="text-[11px] mt-1 text-gray-400">
-                        قائمة طعام رقمية عبر <span className="font-bold text-orange-600">منيو كيو آر مصر</span>
-                    </p>
+                    <div className="flex items-center justify-center gap-1.5 text-[11px] text-gray-400">
+                        <img src="/images/fastpage-logo.png" alt="FastPage" className="h-4 w-auto object-contain" />
+                        <span>قائمة طعام رقمية مدعومة من <span className="font-bold text-gray-700">FastPage</span> &bull; حلول رقمية سريعة لمطعمك وكافيهك</span>
+                    </div>
                 </div>
             </footer>
         </div>

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\AuditLog;
 use App\Models\Restaurant;
 use App\Models\Subscription;
@@ -60,7 +61,6 @@ class AdminController extends Controller
 
         // Global Platform Stats
         $totalRestaurants = Restaurant::count();
-        $allSubs = Subscription::all();
 
         $activeCount = 0;
         $pendingCount = 0;
@@ -104,6 +104,7 @@ class AdminController extends Controller
                 'status' => $statusFilter,
             ],
             'recentLogs' => $recentLogs,
+            'adminPrefix' => config('saas.admin_path', 'fastpage-secure-superadmin-control-center'),
         ]);
     }
 

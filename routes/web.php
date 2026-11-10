@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MenuItemController;
@@ -84,16 +84,26 @@ Route::middleware('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Super Admin Protected Routes (Auth + SuperAdmin Role)
+| Super Admin Protected Routes (Long Isolated URL Prefix + SuperAdmin Role)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+$adminPrefix = config('saas.admin_path', 'fastpage-secure-superadmin-control-center');
+
+Route::middleware(['auth', 'admin'])->prefix($adminPrefix)->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::post('/restaurants/{restaurant}/activate', [AdminController::class, 'activateSubscription'])->name('admin.restaurants.activate');
     Route::post('/restaurants/{restaurant}/renew', [AdminController::class, 'renewSubscription'])->name('admin.restaurants.renew');
     Route::post('/restaurants/{restaurant}/suspend', [AdminController::class, 'suspendSubscription'])->name('admin.restaurants.suspend');
     Route::post('/restaurants/{restaurant}/unsuspend', [AdminController::class, 'unsuspendSubscription'])->name('admin.restaurants.unsuspend');
     Route::delete('/restaurants/{restaurant}', [AdminController::class, 'destroyRestaurant'])->name('admin.restaurants.destroy');
+});
+
+// Guard default /admin path: redirect superadmin to secret portal, or return 404
+Route::get('/admin', function () {
+    if (auth()->check() && auth()->user()->isSuperAdmin()) {
+        return redirect()->route('admin.dashboard');
+    }
+    abort(404);
 });
 
 require __DIR__.'/auth.php';

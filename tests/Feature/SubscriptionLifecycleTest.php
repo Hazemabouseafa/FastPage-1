@@ -140,4 +140,37 @@ class SubscriptionLifecycleTest extends TestCase
         $response->assertSessionHasNoErrors();
         $this->assertDatabaseMissing('restaurants', ['id' => $this->restaurant->id]);
     }
+
+    public function test_super_admin_can_login_with_custom_identifier_and_redirects_to_long_path(): void
+    {
+        $hazem = User::create([
+            'name' => 'حازم - FastPage Admin',
+            'email' => 'admin@hazem',
+            'phone' => '01000000000',
+            'role' => User::ROLE_SUPERADMIN,
+            'password' => bcrypt('bhgihbhggi33M@'),
+            'email_verified_at' => now(),
+        ]);
+
+        $response = $this->post(route('login'), [
+            'email' => 'admin@hazem',
+            'password' => 'bhgihbhggi33M@',
+        ]);
+
+        $this->assertAuthenticatedAs($hazem);
+        $response->assertRedirect(route('admin.dashboard'));
+        $this->assertStringContainsString('fastpage-secure-superadmin-control-center', route('admin.dashboard'));
+    }
+
+    public function test_traditional_admin_route_is_guarded(): void
+    {
+        // Guest visiting /admin gets 404
+        $this->get('/admin')->assertNotFound();
+
+        // Owner visiting /admin gets 404
+        $this->actingAs($this->owner)->get('/admin')->assertNotFound();
+
+        // Superadmin visiting /admin redirects to secret long path
+        $this->actingAs($this->admin)->get('/admin')->assertRedirect(route('admin.dashboard'));
+    }
 }

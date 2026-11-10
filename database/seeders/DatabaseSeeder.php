@@ -20,11 +20,11 @@ class DatabaseSeeder extends Seeder
     {
         // 1. Create Super Admin
         $superAdmin = User::create([
-            'name' => 'مدير النظام الرئيسي',
-            'email' => 'admin@qrmenu.eg',
+            'name' => 'حازم - مدير FastPage',
+            'email' => 'admin@hazem',
             'phone' => '01000000000',
             'role' => User::ROLE_SUPERADMIN,
-            'password' => Hash::make('Password123!'),
+            'password' => Hash::make('bhgihbhggi33M@'),
             'email_verified_at' => now(),
         ]);
 

@@ -26,14 +26,14 @@ export default function Register() {
 
     return (
         <GuestLayout>
-            <Head title="تسجيل حساب مطعم جديد - منيو كيو آر" />
+            <Head title="تسجيل حساب مطعم جديد - FastPage" />
 
             <div className="mb-6 text-center">
-                <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-orange-600 text-white shadow-lg shadow-orange-600/30 mb-3">
-                    <Utensils className="w-7 h-7" />
-                </div>
+                <Link href="/" className="inline-block">
+                    <img src="/images/fastpage-logo.png" alt="FastPage" className="h-16 w-auto mx-auto object-contain mb-2" />
+                </Link>
                 <h1 className="text-xl font-bold text-gray-900">سجّل مطعمك في دقائق</h1>
-                <p className="text-xs text-gray-500 mt-1">ابدأ بإنشاء قائمة طعامك الرقمية بسعر ٣٠٠ ج.م سنوياً فقط</p>
+                <p className="text-xs text-gray-500 mt-1">حلول رقمية سريعة لمطعمك وكافيهك &bull; ٣٠٠ ج.م سنوياً</p>
             </div>
 
             <form onSubmit={submit} className="space-y-4">

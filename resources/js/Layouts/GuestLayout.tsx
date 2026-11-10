@@ -8,7 +8,7 @@ export default function Guest({ children }: PropsWithChildren) {
                     {children}
                 </div>
                 <div className="mt-6 text-center text-xs text-gray-400">
-                    منيو كيو آر مصر &copy; {new Date().getFullYear()} &bull; بسيط، سريع، وبدون عمولات
+                    FastPage &copy; {new Date().getFullYear()} &bull; حلول رقمية سريعة لمطعمك وكافيهك
                 </div>
             </div>
         </div>

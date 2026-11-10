@@ -200,8 +200,9 @@
             </p>
         </div>
 
-        <div class="footer-note">
-            رابط المنيو: {{ $targetUrl }}
+        <div class="footer-note" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <img src="/images/fastpage-logo.png" alt="FastPage" style="height: 20px; object-fit: contain;">
+            <span>FastPage &bull; حلول رقمية سريعة لمطعمك وكافيهك</span>
         </div>
     </div>
 

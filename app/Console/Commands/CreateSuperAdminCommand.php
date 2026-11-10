@@ -14,8 +14,8 @@ class CreateSuperAdminCommand extends Command
      * @var string
      */
     protected $signature = 'saas:admin 
-                            {email? : Super Admin Email} 
-                            {--name=مدير النظام : Super Admin Name} 
+                            {email? : Super Admin Email/Identifier} 
+                            {--name=حازم - FastPage Admin : Super Admin Name} 
                             {--phone=01000000000 : Egyptian Phone Number} 
                             {--password= : Password}';
 

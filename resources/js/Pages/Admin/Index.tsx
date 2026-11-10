@@ -82,9 +82,10 @@ interface Props {
         status: string;
     };
     recentLogs: AuditLog[];
+    adminPrefix?: string;
 }
 
-export default function AdminIndex({ restaurants, stats, filters, recentLogs }: Props) {
+export default function AdminIndex({ restaurants, stats, filters, recentLogs, adminPrefix }: Props) {
     const { flash } = usePage().props as any;
     const [search, setSearch] = useState(filters.search || '');
     const [statusFilter, setStatusFilter] = useState(filters.status || '');
@@ -141,22 +142,27 @@ export default function AdminIndex({ restaurants, stats, filters, recentLogs }: 
 
     return (
         <div className="min-h-screen bg-gray-100 text-gray-900 pb-16" dir="rtl">
-            <Head title="لوحة إدارة النظام - سوبر أدمن" />
+            <Head title="FastPage - لوحة تحكم السوبر أدمن" />
 
             {/* Admin Header */}
             <header className="sticky top-0 z-30 bg-slate-900 text-white px-4 py-3 shadow-md">
                 <div className="max-w-6xl mx-auto flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                        <div className="w-9 h-9 rounded-xl bg-orange-600 flex items-center justify-center text-white font-bold shadow-xs">
-                            <ShieldCheck className="w-5 h-5" />
-                        </div>
+                    <div className="flex items-center gap-3">
+                        <img src="/images/fastpage-logo.png" alt="FastPage" className="h-9 w-auto object-contain bg-white rounded-lg p-1" />
                         <div>
-                            <h1 className="text-sm font-bold leading-tight">إدارة منيو كيو آر مصر</h1>
-                            <span className="text-[10px] text-slate-400 block font-mono">سوبر أدمن &bull; باقة {stats.annual_plan_price} ج.م/سنة</span>
+                            <h1 className="text-sm font-bold leading-tight">FastPage &bull; لوحة التحكم المركزية</h1>
+                            <span className="text-[10px] text-slate-400 block font-mono">
+                                المدير: حازم (admin@hazem) &bull; باقة {stats.annual_plan_price} ج.م/سنة
+                            </span>
                         </div>
                     </div>
 
                     <div className="flex items-center gap-3">
+                        {adminPrefix && (
+                            <span className="hidden sm:inline-block text-[10px] font-mono bg-slate-800 text-slate-300 px-2.5 py-1 rounded-lg border border-slate-700" title="المسار السري للوحة الإدارة">
+                                /{adminPrefix}
+                            </span>
+                        )}
                         <Link
                             href={route('logout')}
                             method="post"
