@@ -323,7 +323,7 @@ export default function Dashboard({ restaurant, categories, items, stats }: Prop
                         <div className="flex-1">
                             <h2 className="text-xs font-bold text-amber-900">الاشتراك السنوي في انتظار التفعيل</h2>
                             <p className="text-[11px] text-amber-700 mt-0.5 leading-relaxed">
-                                اشتراك مطعمك (٣٠٠ ج.م / سنة) يتم تفعيله يدوياً بواسطة إدارة المنصة. تواصل مع الدعم الفني لتفعيل المنيو فوراً.
+                                اشتراك مطعمك أو كافيهك ({saas?.annual_price || 300} ج.م / سنة) يتم تفعيله يدوياً بواسطة إدارة المنصة. تواصل مع الدعم الفني لتفعيل المنيو فوراً.
                             </p>
                             <a
                                 href={`https://wa.me/${saas?.admin_support_whatsapp || '201000000000'}?text=${encodeURIComponent(`مرحباً، أود تفعيل اشتراك مطعمي: ${restaurant.name} (رابط: ${restaurant.slug})`)}`}
@@ -566,7 +566,7 @@ export default function Dashboard({ restaurant, categories, items, stats }: Prop
                 {activeTab === 'qr' && (
                     <div className="space-y-4">
                         <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm text-center">
-                            <h2 className="text-base font-extrabold text-gray-900">رمز الـ QR الخاص بمطعمك</h2>
+                            <h2 className="text-base font-extrabold text-gray-900">رمز الـ QR الخاص بمطعمك أو كافيهك</h2>
                             <p className="text-xs text-gray-500 mt-1">امسح الرمز بكاميرا هاتفك لمعاينة المنيو مباشرة</p>
 
                             {/* Live QR Image Box */}
@@ -671,11 +671,11 @@ export default function Dashboard({ restaurant, categories, items, stats }: Prop
                             <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400">الهوية والشعار</h3>
 
                             <div>
-                                <label className="block text-sm font-semibold text-gray-800 mb-2">شعار المطعم</label>
+                                <label className="block text-sm font-semibold text-gray-800 mb-2">شعار المطعم أو الكافيه</label>
                                 <div className="flex items-center gap-4">
                                     <div className="relative w-16 h-16 rounded-2xl border border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden shrink-0">
                                         {logoPreview ? (
-                                            <img src={logoPreview} alt="شعار المطعم" className="w-full h-full object-cover" />
+                                            <img src={logoPreview} alt="شعار المطعم أو الكافيه" className="w-full h-full object-cover" />
                                         ) : (
                                             <Utensils className="w-6 h-6 text-gray-400" />
                                         )}
@@ -732,7 +732,7 @@ export default function Dashboard({ restaurant, categories, items, stats }: Prop
                             <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400">معلومات التواصل</h3>
 
                             <div>
-                                <label className="block text-xs font-bold text-gray-700 mb-1">اسم المطعم</label>
+                                <label className="block text-xs font-bold text-gray-700 mb-1">اسم المطعم أو الكافيه</label>
                                 <input
                                     type="text"
                                     value={settingsForm.data.name}

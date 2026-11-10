@@ -114,7 +114,7 @@ export default function Login({
                     <p className="text-center text-xs text-gray-500">
                         ليس لديك حساب؟{' '}
                         <Link href={route('register')} className="text-orange-600 font-bold hover:underline">
-                            سجل مطعمك الآن
+                            سجل مطعمك أو كافيهك الآن
                         </Link>
                     </p>
                 </div>
@@ -123,7 +123,7 @@ export default function Login({
             {/* Quick Demo Fill Button for Testing */}
             <div className="mt-6 pt-5 border-t border-gray-100">
                 <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2.5 text-center">
-                    تجربة سريعة لصاحب المطعم
+                    تجربة سريعة لصاحب المطعم أو الكافيه
                 </p>
                 <button
                     type="button"
@@ -133,7 +133,7 @@ export default function Login({
                     <div className="flex items-center gap-2">
                         <Store className="w-4 h-4 text-orange-600 shrink-0" />
                         <div>
-                            <div className="text-xs font-bold text-gray-900 leading-tight">حساب صاحب مطعم تجريبي</div>
+                            <div className="text-xs font-bold text-gray-900 leading-tight">حساب تجريبي لصاحب مطعم أو كافيه</div>
                             <div className="text-[10px] text-gray-500 font-mono">owner@koshary-tahrir.eg</div>
                         </div>
                     </div>

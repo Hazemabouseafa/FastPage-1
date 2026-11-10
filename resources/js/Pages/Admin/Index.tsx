@@ -240,13 +240,13 @@ export default function AdminIndex({ restaurants, stats, filters, recentLogs, ad
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
                     <div className="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-xs">
                         <div className="flex items-center justify-between text-gray-500 mb-1">
-                            <span className="text-xs font-bold">إجمالي المطاعم</span>
+                            <span className="text-xs font-bold">إجمالي المطاعم والكافيهات</span>
                             <Store className="w-4 h-4 text-orange-600" />
                         </div>
                         <div className="text-2xl font-black text-gray-900 font-mono">
                             {stats.total_restaurants}
                         </div>
-                        <span className="text-[10px] text-gray-400">مطاعم مسجلة بالنظام</span>
+                        <span className="text-[10px] text-gray-400">مطاعم وكافيهات مسجلة</span>
                     </div>
 
                     <div className="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-xs">
@@ -448,13 +448,13 @@ export default function AdminIndex({ restaurants, stats, filters, recentLogs, ad
                 <div className="bg-white rounded-3xl border border-gray-200/80 shadow-xs overflow-hidden">
                     <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
                         <h2 className="text-sm font-bold text-gray-900">
-                            قائمة المطاعم ({restaurants.length})
+                            قائمة المطاعم والكافيهات ({restaurants.length})
                         </h2>
                     </div>
 
                     {restaurants.length === 0 ? (
                         <div className="p-8 text-center text-gray-500 text-xs">
-                            لا توجد مطاعم مطابقة لشروط البحث
+                            لا توجد مطاعم أو كافيهات مطابقة لشروط البحث
                         </div>
                     ) : (
                         <div className="divide-y divide-gray-100">

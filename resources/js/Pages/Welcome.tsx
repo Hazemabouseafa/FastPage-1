@@ -30,7 +30,7 @@ export default function Welcome({ demoSlug, annualPrice }: Props) {
                             href={route('register')}
                             className="text-xs font-bold px-4 py-2 rounded-xl bg-orange-600 text-white hover:bg-orange-700 shadow-sm shadow-orange-600/20 transition min-h-[40px] flex items-center"
                         >
-                            سجل مطعمك
+                            سجل مطعمك أو كافيهك
                         </Link>
                     </div>
                 </div>
@@ -44,7 +44,7 @@ export default function Welcome({ demoSlug, annualPrice }: Props) {
                 </div>
 
                 <h1 className="text-3xl sm:text-5xl font-black text-gray-900 leading-[1.25] tracking-tight max-w-2xl">
-                    منيو رقمي أنيق لمطعمك <br />
+                    منيو رقمي أنيق لمطعمك أو كافيهك <br />
                     <span className="text-orange-600">في أقل من ٥ دقائق</span>
                 </h1>
 
@@ -70,7 +70,7 @@ export default function Welcome({ demoSlug, annualPrice }: Props) {
                         href={route('register')}
                         className="w-full bg-orange-600 hover:bg-orange-700 active:scale-[0.98] text-white font-extrabold text-base py-3.5 px-6 rounded-2xl shadow-lg shadow-orange-600/25 flex items-center justify-center gap-2 transition min-h-[52px]"
                     >
-                        <span>أنشئ منيو مطعمك الآن</span>
+                        <span>أنشئ منيو مطعمك أو كافيهك الآن</span>
                         <ArrowLeft className="w-5 h-5" />
                     </Link>
 
@@ -126,7 +126,7 @@ export default function Welcome({ demoSlug, annualPrice }: Props) {
                         <div className="p-3">
                             <div className="w-8 h-8 rounded-full bg-orange-600 text-white font-black text-sm flex items-center justify-center mx-auto mb-2">١</div>
                             <h4 className="text-sm font-bold text-gray-900">سجل حسابك</h4>
-                            <p className="text-xs text-gray-500 mt-1">اسم المطعم ورقم الواتساب</p>
+                            <p className="text-xs text-gray-500 mt-1">اسم المطعم أو الكافيه ورقم الواتساب</p>
                         </div>
                         <div className="p-3">
                             <div className="w-8 h-8 rounded-full bg-orange-600 text-white font-black text-sm flex items-center justify-center mx-auto mb-2">٢</div>
@@ -157,7 +157,7 @@ export default function Welcome({ demoSlug, annualPrice }: Props) {
                     <div className="flex items-center gap-4 text-gray-500 font-semibold">
                         <Link href={route('login')} className="hover:text-orange-600">تسجيل الدخول</Link>
                         <span>&bull;</span>
-                        <Link href={route('register')} className="hover:text-orange-600">سجل مطعمك</Link>
+                        <Link href={route('register')} className="hover:text-orange-600">سجل مطعمك أو كافيهك</Link>
                     </div>
                 </div>
             </footer>

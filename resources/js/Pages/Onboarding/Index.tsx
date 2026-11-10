@@ -86,7 +86,7 @@ export default function Onboarding({ suggestedSlug }: Props) {
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-orange-50/50 via-white to-gray-50 text-gray-900 pb-12">
-            <Head title="إعداد مطعمك الجديد - منيو كيو آر" />
+            <Head title="إعداد مطعمك أو كافيهك الجديد - FastPage" />
 
             {/* Mobile Header */}
             <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-gray-100 px-4 py-3.5">
@@ -96,7 +96,7 @@ export default function Onboarding({ suggestedSlug }: Props) {
                             <Utensils className="w-5 h-5" />
                         </div>
                         <div>
-                            <h1 className="text-base font-bold text-gray-900 leading-tight">إنشاء منيو المطعم</h1>
+                            <h1 className="text-base font-bold text-gray-900 leading-tight">إنشاء منيو المطعم أو الكافيه</h1>
                             <p className="text-xs text-gray-500">خطوة واحدة ويبدأ الزبائن بمسح الرمز</p>
                         </div>
                     </div>
@@ -117,7 +117,7 @@ export default function Onboarding({ suggestedSlug }: Props) {
                             <div>
                                 <h2 className="text-sm font-bold text-gray-900">أهلاً بك، {auth?.user?.name}!</h2>
                                 <p className="text-xs text-gray-600 mt-1 leading-relaxed">
-                                    أدخل بيانات مطعمك البسيطة لنقوم بإنشاء رابط المنيو ورمز الـ QR المخصص لمطعمك فوراً.
+                                    أدخل بيانات مطعمك أو كافيهك لنقوم بإنشاء رابط المنيو ورمز الـ QR المخصص لك فوراً.
                                 </p>
                             </div>
                         </div>
@@ -129,11 +129,11 @@ export default function Onboarding({ suggestedSlug }: Props) {
 
                         {/* Logo Upload */}
                         <div>
-                            <label className="block text-sm font-semibold text-gray-800 mb-2">شعار المطعم (اختياري)</label>
+                            <label className="block text-sm font-semibold text-gray-800 mb-2">شعار المطعم أو الكافيه (اختياري)</label>
                             <div className="flex items-center gap-4">
                                 <div className="relative w-20 h-20 rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden shrink-0">
                                     {logoPreview ? (
-                                        <img src={logoPreview} alt="شعار المطعم" className="w-full h-full object-cover" />
+                                        <img src={logoPreview} alt="شعار المطعم أو الكافيه" className="w-full h-full object-cover" />
                                     ) : (
                                         <Upload className="w-6 h-6 text-gray-400" />
                                     )}
@@ -184,19 +184,19 @@ export default function Onboarding({ suggestedSlug }: Props) {
 
                     {/* Basic Info Card */}
                     <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm space-y-4">
-                        <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400">معلومات المطعم</h3>
+                        <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400">معلومات المطعم أو الكافيه</h3>
 
                         {/* Restaurant Name */}
                         <div>
                             <label htmlFor="name" className="block text-sm font-semibold text-gray-800 mb-1.5">
-                                اسم المطعم <span className="text-red-500">*</span>
+                                اسم المطعم أو الكافيه <span className="text-red-500">*</span>
                             </label>
                             <input
                                 id="name"
                                 type="text"
                                 value={data.name}
                                 onChange={handleNameChange}
-                                placeholder="مثال: كشري الزعيم"
+                                placeholder="مثال: كشري الزعيم أو قهوة الفيشاوي"
                                 className={`w-full text-base px-3.5 py-3 rounded-xl border ${
                                     errors.name ? 'border-red-500 bg-red-50/20' : 'border-gray-200'
                                 } focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition min-h-[48px]`}
@@ -270,14 +270,14 @@ export default function Onboarding({ suggestedSlug }: Props) {
                         {/* Optional Description */}
                         <div>
                             <label htmlFor="description" className="block text-sm font-semibold text-gray-800 mb-1.5">
-                                نبذة قصيرة عن المطعم (اختياري)
+                                نبذة قصيرة عن المطعم أو الكافيه (اختياري)
                             </label>
                             <textarea
                                 id="description"
                                 rows={2}
                                 value={data.description}
                                 onChange={(e) => setData('description', e.target.value)}
-                                placeholder="أشهى المأكولات الشعبية بجودة ونظافة مضمونة..."
+                                placeholder="أشهى المأكولات والمشروبات الساخنة والباردة..."
                                 className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition"
                             />
                             {errors.description && <p className="text-xs text-red-500 mt-1 font-medium">{errors.description}</p>}
@@ -294,7 +294,7 @@ export default function Onboarding({ suggestedSlug }: Props) {
                             {processing ? (
                                 <>
                                     <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                                    جاري إنشاء مطعمك...
+                                    جاري إنشاء مطعمك أو كافيهك...
                                 </>
                             ) : (
                                 <>
