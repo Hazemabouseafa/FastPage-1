@@ -25,15 +25,19 @@ class SystemSetting extends Model
      */
     public static function get(string $key, mixed $default = null): mixed
     {
-        return Cache::remember("system_setting.{$key}", 3600, function () use ($key, $default) {
-            $setting = static::where('key', $key)->first();
+        try {
+            return Cache::remember("system_setting.{$key}", 3600, function () use ($key, $default) {
+                $setting = static::where('key', $key)->first();
 
-            if (! $setting) {
-                return $default;
-            }
+                if (! $setting) {
+                    return $default;
+                }
 
-            return static::castValue($setting->value, $setting->type);
-        });
+                return static::castValue($setting->value, $setting->type);
+            });
+        } catch (\Throwable $e) {
+            return $default;
+        }
     }
 
     /**

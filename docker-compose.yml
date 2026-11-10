@@ -11,9 +11,11 @@ services:
     environment:
       APP_NAME: "FastPage"
       APP_ENV: "${APP_ENV:-production}"
-      APP_DEBUG: "${APP_DEBUG:-false}"
-      APP_KEY: "${APP_KEY}"
+      APP_DEBUG: "${APP_DEBUG:-true}"
+      APP_KEY: "${APP_KEY:-base64:7VndV1oU70m7zHhUls9B5tJ2Pz2+U4qWq8tY7g8Z0u0=}"
       APP_URL: "${APP_URL:-http://localhost}"
+      LOG_CHANNEL: "${LOG_CHANNEL:-stderr}"
+      LOG_LEVEL: "${LOG_LEVEL:-debug}"
       DB_CONNECTION: pgsql
       DB_HOST: postgres
       DB_PORT: 5432
@@ -22,7 +24,7 @@ services:
       DB_PASSWORD: "${DB_PASSWORD:-secretpassword123}"
       SAAS_ANNUAL_PRICE: "${SAAS_ANNUAL_PRICE:-300}"
       ADMIN_ROUTE_PATH: "${ADMIN_ROUTE_PATH:-fastpage-secure-superadmin-control-center}"
-      SESSION_DRIVER: database
+      SESSION_DRIVER: "${SESSION_DRIVER:-file}"
       QUEUE_CONNECTION: sync
     volumes:
       - uploads_data:/var/www/html/storage/app/public
@@ -46,7 +48,8 @@ services:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d ${DB_DATABASE:-qrmenu}"]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 10s
     networks:
       - qrmenu-network
 

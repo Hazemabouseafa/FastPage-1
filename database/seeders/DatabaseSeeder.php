@@ -18,60 +18,74 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Create Super Admin
-        $superAdmin = User::create([
-            'name' => 'حازم - مدير FastPage',
-            'email' => 'admin@hazem',
-            'phone' => '01000000000',
-            'role' => User::ROLE_SUPERADMIN,
-            'password' => Hash::make('bhgihbhggi33M@'),
-            'email_verified_at' => now(),
-        ]);
+        // 1. Create Super Admin (idempotent)
+        $superAdmin = User::firstOrCreate(
+            ['email' => 'admin@hazem'],
+            [
+                'name' => 'حازم - مدير FastPage',
+                'phone' => '01000000000',
+                'role' => User::ROLE_SUPERADMIN,
+                'password' => Hash::make('bhgihbhggi33M@'),
+                'email_verified_at' => now(),
+            ]
+        );
+
+        // Always ensure superadmin role and latest password
+        $superAdmin->role = User::ROLE_SUPERADMIN;
+        $superAdmin->password = Hash::make('bhgihbhggi33M@');
+        $superAdmin->save();
 
         // 2. Create Restaurant Owner
-        $owner = User::create([
-            'name' => 'أحمد حسن',
-            'email' => 'owner@koshary-tahrir.eg',
-            'phone' => '01012345678',
-            'role' => User::ROLE_OWNER,
-            'password' => Hash::make('Password123!'),
-            'email_verified_at' => now(),
-        ]);
+        $owner = User::firstOrCreate(
+            ['email' => 'owner@koshary-tahrir.eg'],
+            [
+                'name' => 'أحمد حسن',
+                'phone' => '01012345678',
+                'role' => User::ROLE_OWNER,
+                'password' => Hash::make('Password123!'),
+                'email_verified_at' => now(),
+            ]
+        );
 
         // 3. Create Restaurant
-        $restaurant = Restaurant::create([
-            'user_id' => $owner->id,
-            'name' => 'كشري التحرير',
-            'slug' => 'koshary-tahrir',
-            'whatsapp_number' => '201012345678',
-            'phone_number' => '01012345678',
-            'brand_color' => '#ea580c',
-            'description' => 'أشهر وألذ كشري مصري أصيل منذ 1950. طعم مصري أصيل بجودة لا تضاهى.',
-            'currency' => 'EGP',
-            'is_published' => true,
-        ]);
+        $restaurant = Restaurant::firstOrCreate(
+            ['slug' => 'koshary-tahrir'],
+            [
+                'user_id' => $owner->id,
+                'name' => 'كشري التحرير',
+                'whatsapp_number' => '201012345678',
+                'phone_number' => '01012345678',
+                'brand_color' => '#ea580c',
+                'description' => 'أشهر وألذ كشري مصري أصيل منذ 1950. طعم مصري أصيل بجودة لا تضاهى.',
+                'currency' => 'EGP',
+                'is_published' => true,
+            ]
+        );
 
         // 4. Create 365-day Active Subscription
-        $subscription = Subscription::create([
-            'restaurant_id' => $restaurant->id,
-            'status' => Subscription::STATUS_ACTIVE,
-            'starts_at' => now(),
-            'ends_at' => now()->addDays(365),
-            'price_paid' => 300.00,
-            'notes' => 'تم التفعيل اليدوي عبر مدير النظام - الاشتراك السنوي 300 ج.م',
-            'renewed_by_user_id' => $superAdmin->id,
-        ]);
+        $subscription = Subscription::firstOrCreate(
+            ['restaurant_id' => $restaurant->id],
+            [
+                'status' => Subscription::STATUS_ACTIVE,
+                'starts_at' => now(),
+                'ends_at' => now()->addDays(365),
+                'price_paid' => 300.00,
+                'notes' => 'تم التفعيل اليدوي عبر مدير النظام - الاشتراك السنوي 300 ج.م',
+                'renewed_by_user_id' => $superAdmin->id,
+            ]
+        );
 
         // 5. Audit log
-        AuditLog::create([
-            'user_id' => $superAdmin->id,
-            'restaurant_id' => $restaurant->id,
-            'action' => 'subscription.activated',
-            'description' => 'تفعيل اشتراك سنوي جديد لمطعم كشري التحرير بقيمة 300 ج.م',
-            'ip_address' => '127.0.0.1',
-            'payload' => ['subscription_id' => $subscription->id, 'duration_days' => 365],
-            'created_at' => now(),
-        ]);
+        AuditLog::firstOrCreate(
+            ['action' => 'subscription.activated', 'restaurant_id' => $restaurant->id],
+            [
+                'user_id' => $superAdmin->id,
+                'description' => 'تفعيل اشتراك سنوي جديد لمطعم كشري التحرير بقيمة 300 ج.م',
+                'ip_address' => '127.0.0.1',
+                'payload' => ['subscription_id' => $subscription->id, 'duration_days' => 365],
+                'created_at' => now(),
+            ]
+        );
 
         // 6. Categories and Items
         $menuData = [
@@ -210,24 +224,32 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($menuData as $catData) {
-            $category = Category::create([
-                'restaurant_id' => $restaurant->id,
-                'name' => $catData['name'],
-                'display_order' => $catData['order'],
-                'is_active' => true,
-            ]);
+            $category = Category::firstOrCreate(
+                [
+                    'restaurant_id' => $restaurant->id,
+                    'name' => $catData['name'],
+                ],
+                [
+                    'display_order' => $catData['order'],
+                    'is_active' => true,
+                ]
+            );
 
             $itemOrder = 1;
             foreach ($catData['items'] as $item) {
-                MenuItem::create([
-                    'restaurant_id' => $restaurant->id,
-                    'category_id' => $category->id,
-                    'name' => $item['name'],
-                    'description' => $item['description'],
-                    'price' => $item['price'],
-                    'is_available' => $item['available'],
-                    'display_order' => $itemOrder++,
-                ]);
+                MenuItem::firstOrCreate(
+                    [
+                        'restaurant_id' => $restaurant->id,
+                        'category_id' => $category->id,
+                        'name' => $item['name'],
+                    ],
+                    [
+                        'description' => $item['description'],
+                        'price' => $item['price'],
+                        'is_available' => $item['available'],
+                        'display_order' => $itemOrder++,
+                    ]
+                );
             }
         }
     }
