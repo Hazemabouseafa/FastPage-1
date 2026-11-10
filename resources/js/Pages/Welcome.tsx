@@ -155,9 +155,9 @@ export default function Welcome({ demoSlug, annualPrice }: Props) {
                         <span>FastPage &copy; {new Date().getFullYear()} &bull; حلول رقمية سريعة لمطعمك وكافيهك</span>
                     </div>
                     <div className="flex items-center gap-4 text-gray-500 font-semibold">
-                        <Link href={route('login')} className="hover:text-orange-600">دخول الإدارة</Link>
+                        <Link href={route('login')} className="hover:text-orange-600">تسجيل الدخول</Link>
                         <span>&bull;</span>
-                        <Link href={route('register')} className="hover:text-orange-600">اشتراك جديد</Link>
+                        <Link href={route('register')} className="hover:text-orange-600">سجل مطعمك</Link>
                     </div>
                 </div>
             </footer>

@@ -5,7 +5,7 @@ import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
-import { Utensils, ShieldCheck, Store } from 'lucide-react';
+import { Utensils, Store } from 'lucide-react';
 
 export default function Login({
     status,
@@ -35,14 +35,6 @@ export default function Login({
         });
     };
 
-    const fillAdminDemo = () => {
-        setData({
-            email: 'admin@hazem',
-            password: 'bhgihbhggi33M@',
-            remember: true,
-        });
-    };
-
     return (
         <GuestLayout>
             <Head title="تسجيل الدخول - FastPage" />
@@ -63,7 +55,7 @@ export default function Login({
 
             <form onSubmit={submit} className="space-y-4">
                 <div>
-                    <InputLabel htmlFor="email" value="البريد الإلكتروني أو اسم المستخدم" />
+                    <InputLabel htmlFor="email" value="البريد الإلكتروني" />
                     <TextInput
                         id="email"
                         type="text"
@@ -74,7 +66,7 @@ export default function Login({
                         className="mt-1 block w-full text-left min-h-[48px]"
                         autoComplete="username"
                         isFocused={true}
-                        placeholder="admin@hazem أو name@restaurant.com"
+                        placeholder="name@restaurant.com"
                         onChange={(e) => setData('email', e.target.value)}
                         required
                     />
@@ -128,36 +120,25 @@ export default function Login({
                 </div>
             </form>
 
-            {/* Quick Demo Fill Buttons for Testing */}
+            {/* Quick Demo Fill Button for Testing */}
             <div className="mt-6 pt-5 border-t border-gray-100">
                 <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2.5 text-center">
-                    حسابات تجريبية سريعة
+                    تجربة سريعة لصاحب المطعم
                 </p>
-                <div className="grid grid-cols-2 gap-2">
-                    <button
-                        type="button"
-                        onClick={fillOwnerDemo}
-                        className="p-2.5 rounded-xl border border-orange-200 bg-orange-50/50 hover:bg-orange-100/60 text-right transition flex items-center gap-2"
-                    >
+                <button
+                    type="button"
+                    onClick={fillOwnerDemo}
+                    className="w-full p-2.5 rounded-xl border border-orange-200 bg-orange-50/50 hover:bg-orange-100/60 text-right transition flex items-center justify-between"
+                >
+                    <div className="flex items-center gap-2">
                         <Store className="w-4 h-4 text-orange-600 shrink-0" />
                         <div>
-                            <div className="text-xs font-bold text-gray-900 leading-tight">صاحب مطعم</div>
-                            <div className="text-[10px] text-gray-500 font-mono">owner@koshary...</div>
+                            <div className="text-xs font-bold text-gray-900 leading-tight">حساب صاحب مطعم تجريبي</div>
+                            <div className="text-[10px] text-gray-500 font-mono">owner@koshary-tahrir.eg</div>
                         </div>
-                    </button>
-
-                    <button
-                        type="button"
-                        onClick={fillAdminDemo}
-                        className="p-2.5 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 text-right transition flex items-center gap-2"
-                    >
-                        <ShieldCheck className="w-4 h-4 text-gray-700 shrink-0" />
-                        <div>
-                            <div className="text-xs font-bold text-gray-900 leading-tight">مدير النظام (حازم)</div>
-                            <div className="text-[10px] text-gray-500 font-mono">admin@hazem</div>
-                        </div>
-                    </button>
-                </div>
+                    </div>
+                    <span className="text-[11px] font-bold text-orange-600">تعبئة تلقائية &larr;</span>
+                </button>
             </div>
         </GuestLayout>
     );
