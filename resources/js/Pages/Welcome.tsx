@@ -13,10 +13,10 @@ export default function Welcome({ demoSlug, annualPrice }: Props) {
             <Head title="FastPage - أسرع قائمة طعام رقمية لمطعمك وكافيهك" />
 
             {/* Navigation Header */}
-            <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-orange-100/60 px-4 py-3">
+            <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-orange-100/60 px-4 py-2 sm:py-2.5">
                 <div className="max-w-4xl mx-auto flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-3">
-                        <img src="/images/fastpage-logo.png" alt="FastPage" className="h-11 sm:h-12 w-auto object-contain" />
+                        <img src="/images/fastpage-logo.png" alt="FastPage" className="h-14 sm:h-16 w-auto object-contain" />
                     </Link>
 
                     <div className="flex items-center gap-2">
@@ -150,8 +150,8 @@ export default function Welcome({ demoSlug, annualPrice }: Props) {
             {/* Footer */}
             <footer className="border-t border-gray-100 bg-white py-6 px-4 text-center text-xs text-gray-400">
                 <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-                    <div className="flex items-center gap-2">
-                        <img src="/images/fastpage-logo.png" alt="FastPage" className="h-6 w-auto object-contain" />
+                    <div className="flex items-center gap-2.5">
+                        <img src="/images/fastpage-logo.png" alt="FastPage" className="h-8 sm:h-9 w-auto object-contain" />
                         <span>FastPage &copy; {new Date().getFullYear()} &bull; حلول رقمية سريعة لمطعمك وكافيهك</span>
                     </div>
                     <div className="flex items-center gap-4 text-gray-500 font-semibold">

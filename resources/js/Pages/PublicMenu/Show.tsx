@@ -304,9 +304,9 @@ export default function Show({ restaurant, categories }: Props) {
             <footer className="mt-16 text-center text-xs text-gray-400 py-6 border-t border-gray-100">
                 <div className="max-w-xl mx-auto px-4 flex flex-col items-center gap-1.5">
                     <p className="font-semibold text-gray-500">{restaurant.name}</p>
-                    <div className="flex items-center justify-center gap-1.5 text-[11px] text-gray-400">
-                        <img src="/images/fastpage-logo.png" alt="FastPage" className="h-4 w-auto object-contain" />
-                        <span>قائمة طعام رقمية مدعومة من <span className="font-bold text-gray-700">FastPage</span> &bull; حلول رقمية سريعة لمطعمك وكافيهك</span>
+                    <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
+                        <img src="/images/fastpage-logo.png" alt="FastPage" className="h-6 w-auto object-contain" />
+                        <span>قائمة طعام رقمية مدعومة من <span className="font-bold text-gray-700">FastPage</span> &bull; حلول رقمية سريعة</span>
                     </div>
                 </div>
             </footer>

@@ -40,8 +40,8 @@ export default function Login({
             <Head title="تسجيل الدخول - FastPage" />
 
             <div className="mb-6 text-center">
-                <Link href="/" className="inline-block">
-                    <img src="/images/fastpage-logo.png" alt="FastPage" className="h-16 w-auto mx-auto object-contain mb-2" />
+                <Link href="/" className="inline-block transition hover:scale-[1.02]">
+                    <img src="/images/fastpage-logo.png" alt="FastPage" className="h-24 sm:h-28 w-auto mx-auto object-contain mb-3 drop-shadow-xs" />
                 </Link>
                 <h1 className="text-xl font-bold text-gray-900">تسجيل الدخول</h1>
                 <p className="text-xs text-gray-500 mt-1">حلول رقمية سريعة لمطعمك وكافيهك</p>

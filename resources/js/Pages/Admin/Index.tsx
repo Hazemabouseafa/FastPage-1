@@ -194,13 +194,13 @@ export default function AdminIndex({ restaurants, stats, filters, recentLogs, ad
             <Head title="FastPage - لوحة تحكم السوبر أدمن" />
 
             {/* Admin Header */}
-            <header className="sticky top-0 z-30 bg-slate-900 text-white px-4 py-3 shadow-md">
+            <header className="sticky top-0 z-30 bg-slate-900 text-white px-4 py-2.5 sm:py-3 shadow-md">
                 <div className="max-w-6xl mx-auto flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <img src="/images/fastpage-logo.png" alt="FastPage" className="h-9 w-auto object-contain bg-white rounded-lg p-1" />
+                    <div className="flex items-center gap-3.5">
+                        <img src="/images/fastpage-logo.png" alt="FastPage" className="h-12 sm:h-14 w-auto object-contain bg-white rounded-xl p-1.5 shadow-sm" />
                         <div>
-                            <h1 className="text-sm font-bold leading-tight">FastPage &bull; لوحة التحكم المركزية</h1>
-                            <span className="text-[10px] text-slate-400 block font-mono">
+                            <h1 className="text-base font-bold leading-tight">FastPage &bull; لوحة التحكم المركزية</h1>
+                            <span className="text-[11px] text-slate-300 block font-mono mt-0.5">
                                 المدير: حازم (admin@hazem) &bull; باقة {stats.annual_plan_price} ج.م/سنة
                             </span>
                         </div>

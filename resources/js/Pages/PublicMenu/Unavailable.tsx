@@ -75,8 +75,8 @@ export default function Unavailable({
                     )}
                 </div>
 
-                <div className="pt-4 border-t border-gray-100 text-[11px] text-gray-400 flex items-center justify-center gap-1.5">
-                    <img src="/images/fastpage-logo.png" alt="FastPage" className="h-4 w-auto object-contain" />
+                <div className="pt-4 border-t border-gray-100 text-xs text-gray-400 flex items-center justify-center gap-2">
+                    <img src="/images/fastpage-logo.png" alt="FastPage" className="h-6 w-auto object-contain" />
                     <span>FastPage &bull; حلول رقمية سريعة لمطعمك وكافيهك</span>
                 </div>
             </div>
