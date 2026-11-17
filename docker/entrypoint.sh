@@ -63,7 +63,7 @@ php artisan db:seed --force || echo "Warning: db:seed had non-zero exit, continu
 
 # 9. Guarantee Super Admin account exists
 echo "Ensuring Super Admin account exists..."
-php artisan saas:admin admin@hazem --name="حازم - مدير FastPage" --phone="01000000000" --password="bhgihbhggi33M@" || true
+php artisan saas:admin admin --name="مدير FastPage" --phone="01000000000" --password="fastpage8888@" || true
 
 # 10. Sync customer data to persistent volume
 php artisan saas:sync-customers || true

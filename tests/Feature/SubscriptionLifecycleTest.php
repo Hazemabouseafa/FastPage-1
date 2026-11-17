@@ -143,21 +143,21 @@ class SubscriptionLifecycleTest extends TestCase
 
     public function test_super_admin_can_login_with_custom_identifier_and_redirects_to_long_path(): void
     {
-        $hazem = User::create([
-            'name' => 'حازم - FastPage Admin',
-            'email' => 'admin@hazem',
+        $adminUser = User::create([
+            'name' => 'مدير FastPage',
+            'email' => 'admin',
             'phone' => '01000000000',
             'role' => User::ROLE_SUPERADMIN,
-            'password' => bcrypt('bhgihbhggi33M@'),
+            'password' => bcrypt('fastpage8888@'),
             'email_verified_at' => now(),
         ]);
 
         $response = $this->post(route('login'), [
-            'email' => 'admin@hazem',
-            'password' => 'bhgihbhggi33M@',
+            'email' => 'admin',
+            'password' => 'fastpage8888@',
         ]);
 
-        $this->assertAuthenticatedAs($hazem);
+        $this->assertAuthenticatedAs($adminUser);
         $response->assertRedirect(route('admin.dashboard'));
         $this->assertStringContainsString('fastpage-secure-superadmin-control-center', route('admin.dashboard'));
     }

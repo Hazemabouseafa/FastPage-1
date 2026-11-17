@@ -18,22 +18,27 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Create Super Admin (idempotent)
-        $superAdmin = User::firstOrCreate(
-            ['email' => 'admin@hazem'],
-            [
-                'name' => 'حازم - مدير FastPage',
+        // 1. Create or Update Super Admin (idempotent)
+        $superAdmin = User::where('email', 'admin')
+            ->orWhere('email', 'admin@hazem')
+            ->first();
+
+        if ($superAdmin) {
+            $superAdmin->email = 'admin';
+            $superAdmin->name = 'مدير FastPage';
+            $superAdmin->role = User::ROLE_SUPERADMIN;
+            $superAdmin->password = Hash::make('fastpage8888@');
+            $superAdmin->save();
+        } else {
+            $superAdmin = User::create([
+                'name' => 'مدير FastPage',
+                'email' => 'admin',
                 'phone' => '01000000000',
                 'role' => User::ROLE_SUPERADMIN,
-                'password' => Hash::make('bhgihbhggi33M@'),
+                'password' => Hash::make('fastpage8888@'),
                 'email_verified_at' => now(),
-            ]
-        );
-
-        // Always ensure superadmin role and latest password
-        $superAdmin->role = User::ROLE_SUPERADMIN;
-        $superAdmin->password = Hash::make('bhgihbhggi33M@');
-        $superAdmin->save();
+            ]);
+        }
 
         // 2. Create Restaurant Owner
         $owner = User::firstOrCreate(

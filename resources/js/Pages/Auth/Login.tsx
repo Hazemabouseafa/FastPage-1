@@ -55,18 +55,17 @@ export default function Login({
 
             <form onSubmit={submit} className="space-y-4">
                 <div>
-                    <InputLabel htmlFor="email" value="البريد الإلكتروني" />
+                    <InputLabel htmlFor="email" value="اسم المستخدم أو البريد الإلكتروني" />
                     <TextInput
                         id="email"
                         type="text"
-                        inputMode="email"
                         name="email"
                         dir="ltr"
                         value={data.email}
                         className="mt-1 block w-full text-left min-h-[48px]"
                         autoComplete="username"
                         isFocused={true}
-                        placeholder="name@restaurant.com"
+                        placeholder="admin أو name@restaurant.com"
                         onChange={(e) => setData('email', e.target.value)}
                         required
                     />

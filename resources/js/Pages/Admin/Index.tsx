@@ -105,7 +105,7 @@ interface Props {
 }
 
 export default function AdminIndex({ restaurants, stats, filters, recentLogs, adminPrefix, persistentStorage }: Props) {
-    const { flash } = usePage().props as any;
+    const { flash, auth } = usePage().props as any;
     const [search, setSearch] = useState(filters.search || '');
     const [statusFilter, setStatusFilter] = useState(filters.status || '');
     const [annualPriceInput, setAnnualPriceInput] = useState(stats.annual_plan_price.toString());
@@ -201,7 +201,7 @@ export default function AdminIndex({ restaurants, stats, filters, recentLogs, ad
                         <div>
                             <h1 className="text-base font-bold leading-tight">FastPage &bull; لوحة التحكم المركزية</h1>
                             <span className="text-[11px] text-slate-300 block font-mono mt-0.5">
-                                المدير: حازم (admin@hazem) &bull; باقة {stats.annual_plan_price} ج.م/سنة
+                                المدير: {auth?.user?.name || 'مدير FastPage'} ({auth?.user?.email || 'admin'}) &bull; باقة {stats.annual_plan_price} ج.م/سنة
                             </span>
                         </div>
                     </div>

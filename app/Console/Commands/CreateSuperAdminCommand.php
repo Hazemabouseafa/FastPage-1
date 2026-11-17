@@ -41,6 +41,14 @@ class CreateSuperAdminCommand extends Command
             return 1;
         }
 
+        if ($email === 'admin') {
+            $legacy = User::where('email', 'admin@hazem')->first();
+            if ($legacy && ! User::where('email', 'admin')->exists()) {
+                $legacy->email = 'admin';
+                $legacy->save();
+            }
+        }
+
         $user = User::where('email', $email)->first();
 
         if ($user) {
